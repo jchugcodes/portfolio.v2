@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Joe Hughes — Software Engineer</title>
+<meta name="description" content="Joe Hughes — software engineer with a physics foundation. I build performance-minded systems, from distributed file engines to nutrition platforms." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#121311;
+  --paper-2:#1B1D19;
+  --ink:#F1F2E9;
+  --ink-soft:#C9CBBE;
+  --muted:#8C8F80;
+  --muted-2:#828578;
+  --line:#2B2E27;
+  --line-2:#3C4036;
+  --accent:#CADB2A;
+  --accent-soft:#2A2E12;
+  --serif:'Fraunces',serif;
+  --grotesk:'Space Grotesk',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--grotesk);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:var(--paper)}
+a{color:inherit;text-decoration:none}
+
+/* paper grain + faint plot grid */
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.4;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");}
+.plot-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:linear-gradient(180deg,#000,transparent 70%);
+  -webkit-mask-image:linear-gradient(180deg,#000,transparent 70%);}
+
+.wrap{position:relative;z-index:3;max-width:1240px;margin:0 auto;padding:0 40px}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:60;mix-blend-mode:normal;transition:background .4s,border-color .4s,backdrop-filter .4s;border-bottom:1px solid transparent}
+nav.scrolled{background:rgba(242,239,233,0.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1240px;margin:0 auto;padding:22px 40px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:var(--mono);font-size:13px;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.brand b{font-weight:500}
+.brand .coord{color:var(--muted)}
+.nav-links{display:flex;gap:8px;align-items:center}
+.nav-links a{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);padding:7px 14px;border-radius:100px;transition:color .25s,background .25s;position:relative}
+.nav-links a .idx{color:var(--muted-2);margin-right:6px}
+.nav-links a:hover{background:var(--ink);color:var(--paper)}
+.nav-links a:hover .idx{color:var(--accent)}
+.menu-btn{display:none;font-family:var(--mono);font-size:13px;background:none;border:1px solid var(--line-2);border-radius:100px;padding:7px 16px;cursor:pointer;color:var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:80px;overflow:hidden}
+#field{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none}
+.hero .wrap{position:relative;z-index:4}
+
+.hero-tag{display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:34px;opacity:0;animation:fade .9s .15s forwards}
+.hero-tag .pill{border:1px solid var(--line-2);border-radius:100px;padding:5px 13px;color:var(--ink-soft)}
+.hero-tag .pill .d{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:7px;vertical-align:middle;animation:blink 2.6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+.hero h1{font-family:var(--serif);font-weight:300;font-size:clamp(3.2rem,10.5vw,9.2rem);line-height:0.92;letter-spacing:-0.025em;font-optical-sizing:auto}
+.hero h1 .row{display:block;overflow:hidden;padding:0.04em 0}
+.hero h1 .row > span{display:block;transform:translateY(105%);animation:up 1s forwards;animation-delay:var(--d)}
+.hero h1 em{font-style:italic;font-weight:400}
+.hero h1 .accent{color:var(--accent)}
+.hero h1 .light{color:var(--muted)}
+
+.hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-top:46px;flex-wrap:wrap}
+.hero-lede{max-width:430px;font-size:1.12rem;color:var(--ink-soft);line-height:1.62;opacity:0;animation:fade 1s .95s forwards}
+.hero-lede b{color:var(--ink);font-weight:600}
+.hero-readout{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-align:right;line-height:1.9;opacity:0;animation:fade 1s 1.1s forwards}
+.hero-readout .v{color:var(--ink);font-weight:500}
+.hero-readout .ac{color:var(--accent)}
+
+.scroll-cue{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:4;font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;animation:fade 1s 1.5s forwards}
+.scroll-cue .ln{width:1px;height:36px;background:linear-gradient(var(--muted),transparent);position:relative;overflow:hidden}
+.scroll-cue .ln::after{content:'';position:absolute;top:0;left:0;width:100%;height:40%;background:var(--accent);animation:drop 1.8s infinite}
+@keyframes drop{0%{transform:translateY(-100%)}100%{transform:translateY(250%)}}
+
+@keyframes up{to{transform:translateY(0)}}
+@keyframes fade{to{opacity:1}}
+
+/* ---------- section frame ---------- */
+section{position:relative;z-index:3;padding:140px 0}
+.sec-marker{display:flex;align-items:baseline;gap:20px;margin-bottom:8px}
+.sec-marker .num{font-family:var(--mono);font-size:12.5px;color:var(--accent)}
+.sec-marker .lbl{font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.sec-marker .rule{flex:1;height:1px;background:var(--line-2)}
+.sec-title{font-family:var(--serif);font-weight:300;font-size:clamp(2.2rem,5.5vw,3.6rem);letter-spacing:-0.02em;line-height:1.05;margin-bottom:64px;max-width:16ch}
+.sec-title em{font-style:italic;color:var(--accent)}
+
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ---------- about ---------- */
+.about-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:80px;align-items:start}
+.about-lede{font-family:var(--serif);font-weight:300;font-size:clamp(1.7rem,3vw,2.3rem);line-height:1.32;letter-spacing:-0.015em}
+.about-lede em{font-style:italic;color:var(--accent)}
+.about-body{margin-top:34px}
+.about-body p{color:var(--ink-soft);font-size:1.06rem;margin-bottom:18px;max-width:46ch}
+.about-body b{color:var(--ink);font-weight:600}
+
+.specsheet{border-top:1px solid var(--ink);position:sticky;top:120px}
+.spec-row{display:grid;grid-template-columns:auto 1fr;gap:20px;padding:15px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.spec-row .k{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.spec-row .v{font-family:var(--grotesk);font-size:1.02rem;text-align:right;color:var(--ink)}
+.spec-row .v.ac{color:var(--accent);font-weight:500}
+.spec-row .v em{font-style:italic;font-family:var(--serif)}
+
+/* ---------- work / index ---------- */
+.idx-head{display:grid;grid-template-columns:60px 1fr 200px 110px;gap:24px;padding:0 4px 14px;border-bottom:1px solid var(--ink);font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.entry{display:block;border-bottom:1px solid var(--line);padding:0;cursor:pointer;transition:background .4s}
+.entry:hover{background:var(--paper-2)}
+.entry-main{display:grid;grid-template-columns:60px 1fr 200px 110px;gap:24px;align-items:center;padding:30px 4px}
+.entry .e-idx{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.entry:hover .e-idx{color:var(--accent)}
+.entry .e-name{font-family:var(--serif);font-weight:400;font-size:1.85rem;letter-spacing:-0.015em;line-height:1.1;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.entry:hover .e-name{transform:translateX(10px)}
+.entry .e-name .stat-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-left:12px;vertical-align:middle}
+.entry .e-name .stat-dot.done{background:var(--muted-2)}
+.entry .e-cat{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.02em}
+.entry .e-year{font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-align:right}
+.entry .e-plus{font-family:var(--mono);font-size:1.1rem;color:var(--muted-2);text-align:right;transition:transform .4s,color .4s}
+.entry.open .e-plus{transform:rotate(45deg);color:var(--accent)}
+
+.entry-detail{max-height:0;overflow:hidden;transition:max-height .55s cubic-bezier(.4,0,.2,1)}
+.entry-detail-inner{padding:8px 4px 38px;display:grid;grid-template-columns:60px 1fr 310px;gap:24px}
+.entry-detail .spacer{grid-column:1}
+.entry-detail .e-desc{font-size:1.08rem;color:var(--ink-soft);line-height:1.6;max-width:54ch}
+.entry-detail .e-meta{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:18px;letter-spacing:.04em}
+.e-stack{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+.e-stack span{font-family:var(--mono);font-size:11px;color:var(--ink-soft);border:1px solid var(--line-2);padding:5px 11px;border-radius:100px;transition:border-color .3s,background .3s}
+.entry:hover .e-stack span{border-color:var(--line-2);background:var(--paper)}
+
+/* ---------- approach (signature triad) ---------- */
+.approach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line-2);background:var(--paper)}
+.ax{padding:40px 34px 46px;border-right:1px solid var(--line-2);position:relative;overflow:hidden}
+.ax:last-child{border-right:none}
+.ax .ax-sym{font-family:var(--serif);font-style:italic;font-size:2.4rem;color:var(--accent);margin-bottom:26px;line-height:1}
+.ax h4{font-family:var(--grotesk);font-weight:600;font-size:1.15rem;margin-bottom:12px;letter-spacing:-0.01em}
+.ax p{font-size:0.98rem;color:var(--ink-soft);line-height:1.6}
+.ax .ax-no{position:absolute;top:34px;right:30px;font-family:var(--mono);font-size:11px;color:var(--muted-2)}
+
+/* ---------- toolkit ---------- */
+.kit{display:grid;grid-template-columns:repeat(3,1fr);gap:60px}
+.kit-col h4{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--line-2)}
+.kit-col ul{list-style:none}
+.kit-col li{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line);font-size:1.04rem;color:var(--ink)}
+.kit-col li .note{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+/* ---------- contact ---------- */
+.contact{padding:150px 0 60px}
+.contact-inner{border-top:2px solid var(--ink);padding-top:60px}
+.contact .c-tag{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.04em;margin-bottom:30px}
+.contact h2{font-family:var(--serif);font-weight:300;font-size:clamp(2.6rem,8vw,6rem);letter-spacing:-0.025em;line-height:0.98;margin-bottom:50px}
+.contact h2 em{font-style:italic}
+.contact h2 .accent{color:var(--accent)}
+.c-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.c-btn{font-family:var(--mono);font-size:13px;padding:15px 28px;border-radius:100px;border:1px solid var(--ink);transition:all .3s;display:inline-flex;align-items:center;gap:10px}
+.c-btn:hover{transform:translateY(-3px)}
+.c-btn.solid{background:var(--ink);color:var(--paper)}
+.c-btn.solid:hover{background:var(--accent);border-color:var(--accent)}
+.c-btn.ghost:hover{background:var(--ink);color:var(--paper)}
+.c-btn .ar{transition:transform .3s}
+.c-btn:hover .ar{transform:translate(3px,-3px)}
+
+/* ---------- footer ---------- */
+footer{position:relative;z-index:3;padding:50px 0 40px;margin-top:90px;border-top:1px solid var(--line-2)}
+.foot-inner{max-width:1240px;margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.foot-inner .ac{color:var(--ink-soft)}
+
+/* ---------- magnetic ---------- */
+.mag{display:inline-block;will-change:transform}
+
+/* ---------- responsive ---------- */
+@media(max-width:980px){
+  .about-grid{grid-template-columns:1fr;gap:50px}
+  .specsheet{position:static}
+  .approach-grid{grid-template-columns:1fr}
+  .ax{border-right:none;border-bottom:1px solid var(--line-2)}
+  .ax:last-child{border-bottom:none}
+  .kit{grid-template-columns:1fr;gap:40px}
+}
+@media(max-width:760px){
+  .nav-links{display:none}
+  .menu-btn{display:block}
+  .wrap,.nav-inner,.foot-inner{padding-left:22px;padding-right:22px}
+  .idx-head{grid-template-columns:34px 1fr 60px;gap:14px}
+  .idx-head .h-cat{display:none}
+  .entry-main{grid-template-columns:34px 1fr 60px;gap:14px}
+  .entry .e-cat{display:none}
+  .entry .e-name{font-size:1.4rem}
+  .entry-detail-inner{grid-template-columns:1fr;gap:20px}
+  .entry-detail .e-desc{max-width:none}
+  .hero-foot{flex-direction:column;align-items:flex-start}
+  .hero-readout{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .hero h1 .row>span,.hero-tag,.hero-lede,.hero-readout,.scroll-cue{opacity:1;transform:none}
+  .reveal{opacity:1;transform:none}
+}
+
+.grain{opacity:.18}
+.plot-grid{opacity:.6;mask-image:linear-gradient(180deg,#000,transparent 72%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 72%)}
+nav.scrolled{background:rgba(18,19,17,0.85)}
+.c-btn.solid{background:var(--accent);color:#121311}
+.c-btn.solid:hover{background:#D8E84A;border-color:#D8E84A}
+</style>
+</head>
+<body>
+<div class="plot-grid"></div>
+<div class="grain"></div>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="brand"><b>JOE HUGHES</b><span class="coord">— SWE / 42.66°N, 83.13°W</span></div>
+    <div class="nav-links">
+      <a href="#about"><span class="idx">01</span>About</a>
+      <a href="#work"><span class="idx">02</span>Work</a>
+      <a href="#approach"><span class="idx">03</span>Approach</a>
+      <a href="#toolkit"><span class="idx">04</span>Toolkit</a>
+      <a href="#contact"><span class="idx">05</span>Contact</a>
+    </div>
+    <button class="menu-btn" id="menuBtn">menu</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <canvas id="field"></canvas>
+  <div class="wrap">
+    <div class="hero-tag">
+      <span class="pill"><span class="d"></span>Open to 2026 roles</span>
+      <span>Software Engineer · Physics BS</span>
+    </div>
+    <h1>
+      <span class="row"><span style="--d:.35s">Building <em>systems</em></span></span>
+      <span class="row"><span style="--d:.46s">that <span class="accent">perform</span><span class="light">.</span></span></span>
+    </h1>
+    <div class="hero-foot">
+      <p class="hero-lede">I'm <b>Joe Hughes</b> — a software engineer who came up through physics. I build measured, performance-minded software, and I care about the numbers underneath it.</p>
+      <div class="hero-readout">
+        SYSTEM&nbsp;&nbsp;<span class="v">ONLINE</span><br>
+        ROLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="v">SWE INTERN</span><br>
+        ORG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="ac">CONSUMERS ENERGY</span><br>
+        STATE&nbsp;&nbsp;&nbsp;&nbsp;<span class="v">DETROIT, MI</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>SCROLL</span><span class="ln"></span></div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-marker reveal"><span class="num">01</span><span class="lbl">About</span><span class="rule"></span></div>
+    <h2 class="sec-title reveal">A physicist's instinct,<br>applied to <em>engineering.</em></h2>
+    <div class="about-grid">
+      <div class="reveal">
+        <p class="about-lede">I came to software from physics — and I never stopped thinking like a physicist about it. I want to know <em>why</em> a system behaves the way it does, where it bottlenecks, and how to make it measurably faster.</p>
+        <div class="about-body">
+          <p>At Michigan State I trained to reduce complex systems to their governing rules. That same instinct runs through everything I build now: a <b>C++ distributed file engine</b> I benchmarked across sockets, threads, and gRPC; a <b>nutrition platform</b> with a real plan engine doing TDEE math and carb cycling; a <b>glassmorphism control dashboard</b> wired to live telemetry.</p>
+          <p>Now I'm finishing an MS in Software Engineering at DePaul with a 4.0, interning at Consumers Energy, and shipping side projects faster than I can name them.</p>
+          <p>Off-screen, same theme: training for the Detroit Marathon, dialing in espresso, keeping a juniper bonsai alive. <b>Measure, adjust, repeat.</b></p>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="specsheet">
+          <div class="spec-row"><span class="k">Designation</span><span class="v">Software Engineer</span></div>
+          <div class="spec-row"><span class="k">Current role</span><span class="v ac">SWE Intern</span></div>
+          <div class="spec-row"><span class="k">Organization</span><span class="v">Consumers Energy</span></div>
+          <div class="spec-row"><span class="k">Degree</span><span class="v">MS Software Eng <em>·</em> DePaul</span></div>
+          <div class="spec-row"><span class="k">Foundation</span><span class="v">BS Physics <em>·</em> MSU</span></div>
+          <div class="spec-row"><span class="k">GPA</span><span class="v ac">4.00 / 4.00</span></div>
+          <div class="spec-row"><span class="k">Base</span><span class="v">Detroit, Michigan</span></div>
+          <div class="spec-row"><span class="k">Status</span><span class="v">Open to 2026 roles</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="sec-marker reveal"><span class="num">02</span><span class="lbl">Selected Work</span><span class="rule"></span></div>
+    <h2 class="sec-title reveal">Things I've built<br>and <em>measured.</em></h2>
+
+    <div class="reveal">
+      <div class="idx-head">
+        <span>Idx</span><span>Project</span><span class="h-cat">Domain</span><span style="text-align:right">Year</span>
+      </div>
+
+      <div class="entry" data-entry>
+        <div class="entry-main">
+          <span class="e-idx">001</span>
+          <span class="e-name">MacroTrack<span class="stat-dot"></span></span>
+          <span class="e-cat">Product / Web</span>
+          <span class="e-year">2026 —</span>
+          <span class="e-plus">+</span>
+        </div>
+        <div class="entry-detail"><div class="entry-detail-inner">
+          <span class="spacer"></span>
+          <div>
+            <p class="e-desc">A macro & nutrition tracking platform with a personalized plan engine — TDEE calculation, carb cycling, an onboarding wizard, and voice + barcode logging. Built React-first with a dark performance-app aesthetic, designed to scale to iOS and Android.</p>
+            <p class="e-meta">PERSONAL PRODUCT · ACTIVE BUILD · REACT + PLAN ENGINE</p>
+          </div>
+          <div class="e-stack"><span>React</span><span>Plan Engine</span><span>Voice Logging</span><span>Barcode Scan</span><span>USDA API</span></div>
+        </div></div>
+      </div>
+
+      <div class="entry" data-entry>
+        <div class="entry-main">
+          <span class="e-idx">002</span>
+          <span class="e-name">Distributed File Engine<span class="stat-dot done"></span></span>
+          <span class="e-cat">Systems / C++</span>
+          <span class="e-year">2025</span>
+          <span class="e-plus">+</span>
+        </div>
+        <div class="entry-detail"><div class="entry-detail-inner">
+          <span class="spacer"></span>
+          <div>
+            <p class="e-desc">A four-stage C++ search engine built across a distributed systems course — POSIX sockets, multithreaded indexing with mutex-guarded partitioning, and a gRPC service layer. Benchmarked and tuned for throughput; scored a perfect 50/50 on the autograder across three consecutive assignments.</p>
+            <p class="e-meta">CSC 435 · 50/50 AUTOGRADER · SOCKETS → THREADS → gRPC</p>
+          </div>
+          <div class="e-stack"><span>C++</span><span>POSIX Sockets</span><span>Multithreading</span><span>gRPC</span><span>Benchmarking</span></div>
+        </div></div>
+      </div>
+
+      <div class="entry" data-entry>
+        <div class="entry-main">
+          <span class="e-idx">003</span>
+          <span class="e-name">Telemetry Dashboard<span class="stat-dot"></span></span>
+          <span class="e-cat">Smart Home / JS</span>
+          <span class="e-year">2026 —</span>
+          <span class="e-plus">+</span>
+        </div>
+        <div class="entry-detail"><div class="entry-detail-inner">
+          <span class="spacer"></span>
+          <div>
+            <p class="e-desc">A custom glassmorphism control surface for a Home Assistant iPad kiosk — hand-built JS cards for hourly weather, live sports scores, and news feeds, plus a Claude-powered voice assistant pipeline and LED strip integration. A real-world exercise in live-data UX.</p>
+            <p class="e-meta">SMART HOME · LIVE TELEMETRY · CUSTOM JS CARDS</p>
+          </div>
+          <div class="e-stack"><span>Home Assistant</span><span>JavaScript</span><span>Custom Cards</span><span>Voice Pipeline</span><span>YAML</span></div>
+        </div></div>
+      </div>
+
+      <div class="entry" data-entry>
+        <div class="entry-main">
+          <span class="e-idx">004</span>
+          <span class="e-name">Macrotrition (Flutter)<span class="stat-dot"></span></span>
+          <span class="e-cat">Mobile / Dart</span>
+          <span class="e-year">2026 —</span>
+          <span class="e-plus">+</span>
+        </div>
+        <div class="entry-detail"><div class="entry-detail-inner">
+          <span class="spacer"></span>
+          <div>
+            <p class="e-desc">A cross-platform rewrite of a native Swift/SwiftUI nutrition app onto Flutter — USDA integration, voice logging, barcode scanning, favorites, and a recipe builder. Paired with a multi-agent build pipeline that orchestrates feature work end to end.</p>
+            <p class="e-meta">CROSS-PLATFORM REWRITE · MULTI-AGENT CI PIPELINE</p>
+          </div>
+          <div class="e-stack"><span>Flutter</span><span>Dart</span><span>SwiftUI (legacy)</span><span>Multi-Agent CI</span></div>
+        </div></div>
+      </div>
+
+      <div class="entry" data-entry>
+        <div class="entry-main">
+          <span class="e-idx">005</span>
+          <span class="e-name">ML Deployment Research<span class="stat-dot done"></span></span>
+          <span class="e-cat">MLOps / Research</span>
+          <span class="e-year">2025</span>
+          <span class="e-plus">+</span>
+        </div>
+        <div class="entry-detail"><div class="entry-detail-inner">
+          <span class="spacer"></span>
+          <div>
+            <p class="e-desc">A graduate MLOps study of Docker and Kubernetes for machine-learning deployment — covering experiment tracking, model drift, and reproducible pipelines with WandB, MLflow, Hydra, and DVC. Delivered as a formal ACM-format report and recorded presentation.</p>
+            <p class="e-meta">SE 489 · MLOPS · ACM-FORMAT RESEARCH</p>
+          </div>
+          <div class="e-stack"><span>Docker</span><span>Kubernetes</span><span>MLflow</span><span>DVC</span><span>GCP</span></div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="approach">
+  <div class="wrap">
+    <div class="sec-marker reveal"><span class="num">03</span><span class="lbl">Approach</span><span class="rule"></span></div>
+    <h2 class="sec-title reveal">How I move<br>through a <em>problem.</em></h2>
+    <div class="approach-grid reveal">
+      <div class="ax">
+        <span class="ax-no">i</span>
+        <div class="ax-sym">∇</div>
+        <h4>Reduce to first principles</h4>
+        <p>Before writing code I want the governing rules of the system — the constraints, the data shapes, the real bottleneck. Physics taught me to strip a problem to what actually drives it.</p>
+      </div>
+      <div class="ax">
+        <span class="ax-no">ii</span>
+        <div class="ax-sym">∂</div>
+        <h4>Build the measurable thing</h4>
+        <p>I ship the smallest version that produces a number — a benchmark, a latency, a pass rate. Working software you can measure beats a perfect plan you can't.</p>
+      </div>
+      <div class="ax">
+        <span class="ax-no">iii</span>
+        <div class="ax-sym">∑</div>
+        <h4>Tune against the data</h4>
+        <p>Then I iterate against what the numbers say, not what I assumed. Profile, adjust, re-measure. The same loop whether it's gRPC throughput or a marathon split.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="toolkit">
+  <div class="wrap">
+    <div class="sec-marker reveal"><span class="num">04</span><span class="lbl">Toolkit</span><span class="rule"></span></div>
+    <h2 class="sec-title reveal">The instruments<br>I <em>reach for.</em></h2>
+    <div class="kit reveal">
+      <div class="kit-col">
+        <h4>Languages</h4>
+        <ul>
+          <li>C++<span class="note">systems</span></li>
+          <li>Python<span class="note">tooling · ml</span></li>
+          <li>JavaScript<span class="note">web</span></li>
+          <li>Dart<span class="note">mobile</span></li>
+          <li>Swift<span class="note">ios</span></li>
+        </ul>
+      </div>
+      <div class="kit-col">
+        <h4>Frameworks</h4>
+        <ul>
+          <li>React<span class="note">web ui</span></li>
+          <li>Flutter<span class="note">cross-platform</span></li>
+          <li>SwiftUI / UIKit<span class="note">native</span></li>
+          <li>gRPC<span class="note">services</span></li>
+          <li>Node<span class="note">runtime</span></li>
+        </ul>
+      </div>
+      <div class="kit-col">
+        <h4>Platform &amp; Ops</h4>
+        <ul>
+          <li>Docker<span class="note">containers</span></li>
+          <li>Kubernetes<span class="note">orchestration</span></li>
+          <li>GCP<span class="note">cloud</span></li>
+          <li>Git<span class="note">version ctrl</span></li>
+          <li>MLflow / DVC<span class="note">mlops</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="contact-inner reveal">
+      <div class="c-tag">// 05 — CONTACT · OPEN TO 2026 OPPORTUNITIES</div>
+      <h2>Let's build something<br>that <em class="accent">performs.</em></h2>
+      <div class="c-actions">
+        <a href="mailto:hello@hughesjoe.com" class="c-btn solid mag">Email me <span class="ar">→</span></a>
+        <a href="https://github.com/" target="_blank" rel="noopener" class="c-btn ghost mag">GitHub <span class="ar">↗</span></a>
+        <a href="https://linkedin.com/" target="_blank" rel="noopener" class="c-btn ghost mag">LinkedIn <span class="ar">↗</span></a>
+        <a href="/resume.pdf" class="c-btn ghost mag">Résumé <span class="ar">↓</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <span>© 2026 JOE HUGHES — <span class="ac">BUILT FROM SCRATCH</span></span>
+    <span>FRAUNCES / SPACE GROTESK / JETBRAINS MONO</span>
+    <span class="ac">42.66°N, 83.13°W</span>
+  </div>
+</footer>
+
+<script>
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ---------- nav scroll ---------- */
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>30),{passive:true});
+document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('about').scrollIntoView({behavior:'smooth'}));
+
+/* ---------- accordion work index ---------- */
+document.querySelectorAll('[data-entry]').forEach(entry=>{
+  const detail=entry.querySelector('.entry-detail');
+  entry.addEventListener('click',()=>{
+    const isOpen=entry.classList.contains('open');
+    document.querySelectorAll('[data-entry]').forEach(e=>{
+      e.classList.remove('open');
+      e.querySelector('.entry-detail').style.maxHeight=null;
+    });
+    if(!isOpen){
+      entry.classList.add('open');
+      detail.style.maxHeight=detail.scrollHeight+'px';
+    }
+  });
+});
+
+/* ---------- reveal observer ---------- */
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%3*70)+'ms';io.observe(el);});
+
+/* ---------- magnetic buttons ---------- */
+if(!reduce && matchMedia('(pointer:fine)').matches){
+  document.querySelectorAll('.mag').forEach(el=>{
+    el.addEventListener('mousemove',e=>{
+      const r=el.getBoundingClientRect();
+      const x=e.clientX-r.left-r.width/2, y=e.clientY-r.top-r.height/2;
+      el.style.transform=`translate(${x*0.28}px,${y*0.4}px)`;
+    });
+    el.addEventListener('mouseleave',()=>{el.style.transform='';});
+  });
+}
+
+/* ---------- phase-space attractor field ---------- */
+(function(){
+  const cv=document.getElementById('field');
+  const ctx=cv.getContext('2d');
+  let W,H,DPR,cx,cy,scale;
+  const mouse={x:1e9,y:1e9,active:false};
+
+  function resize(){
+    DPR=Math.min(devicePixelRatio||1,2);
+    W=cv.clientWidth;H=cv.clientHeight;
+    cv.width=W*DPR;cv.height=H*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    cx=W*0.5;cy=H*0.52;
+    scale=Math.min(W,H)/3.0;
+  }
+  resize();addEventListener('resize',resize);
+
+  addEventListener('mousemove',e=>{
+    const r=cv.getBoundingClientRect();
+    mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;mouse.active=true;
+  });
+  addEventListener('mouseout',()=>{mouse.active=false;mouse.x=mouse.y=1e9;});
+
+  // de Jong attractor — produces an organic plotted orbit
+  const a=1.641,b=1.902,c=0.316,d=1.525;
+  const N=reduce?1400:2600;
+  const pts=new Array(N);
+  let px=0.1,py=0.1;
+  for(let i=0;i<N+200;i++){
+    const nx=Math.sin(a*py)-Math.cos(b*px);
+    const ny=Math.sin(c*px)-Math.cos(d*py);
+    px=nx;py=ny;
+    if(i>=200){
+      pts[i-200]={
+        bx:nx,by:ny,            // base position (attractor coords, ~ -2..2)
+        x:0,y:0,vx:0,vy:0,      // rendered + velocity
+        ph:Math.random()*Math.PI*2
+      };
+    }
+  }
+  // init rendered positions
+  pts.forEach(p=>{p.x=cx+p.bx*scale;p.y=cy+p.by*scale;});
+
+  let t=0, intro=0;
+  function frame(){
+    t+=0.006; intro=Math.min(intro+0.012,1);
+    ctx.clearRect(0,0,W,H);
+
+    const ease=1-Math.pow(1-intro,3);
+    for(let i=0;i<N;i++){
+      const p=pts[i];
+      const tx=cx+p.bx*scale, ty=cy+p.by*scale;
+      // gentle breathing drift so the field feels alive
+      const driftX=Math.cos(t+p.ph)*1.2, driftY=Math.sin(t*0.8+p.ph)*1.2;
+      let targetX=tx+driftX, targetY=ty+driftY;
+
+      // spring toward target
+      p.vx+=(targetX-p.x)*0.02; p.vy+=(targetY-p.y)*0.02;
+
+      // cursor gravity (subtle repel)
+      if(mouse.active){
+        const dx=p.x-mouse.x, dy=p.y-mouse.y;
+        const d2=dx*dx+dy*dy;
+        if(d2<26000){
+          const f=(26000-d2)/26000;
+          const dist=Math.sqrt(d2)||1;
+          p.vx+=(dx/dist)*f*2.6; p.vy+=(dy/dist)*f*2.6;
+        }
+      }
+      p.vx*=0.86; p.vy*=0.86;
+      p.x+=p.vx; p.y+=p.vy;
+
+      // intro: rise from baseline
+      const drawY=p.y+(1-ease)*40;
+      const alpha=ease*(0.16+0.5*((p.bx+2)/4));
+      const r=0.7+1.0*((p.by+2)/4);
+
+      // color: mostly ink, accent on the leading edge of the orbit
+      const isAccent=(Math.sin(p.ph*3+t)>0.86);
+      ctx.fillStyle=isAccent?`rgba(202,219,42,${alpha*1.4})`:`rgba(176,179,160,${alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x,drawY,r,0,Math.PI*2);
+      ctx.fill();
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+</body>
+</html>
