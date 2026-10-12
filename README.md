@@ -8,17 +8,14 @@ The attractor renders as yellow sparks on black. All text passes WCAG AA contras
 
 ---
 
-## Deploy to Cloudflare Pages
-Drag-and-drop (fastest): Cloudflare dashboard -> Workers & Pages -> Create -> Pages ->
-Upload assets -> drop this folder -> Deploy. Then add hughesjoe.com under Custom Domains.
+## Deploy (Vercel)
+Hosted on Vercel at www.hughesjoe.com. The repo is connected to Vercel, so pushes to
+main deploy to production and pull requests get preview deployments. No build step:
+Vercel serves the repo root as static files (`_headers` holds header rules).
 
-Git: push this folder to a repo, then Pages -> Connect to Git. Build command: blank.
-Output directory: /
-
-## Before going live (all in index.html)
-- Update the GitHub + LinkedIn URLs (currently placeholders).
-- Confirm the mailto: address.
-- Drop a resume.pdf in this folder — the Resume button links to /resume.pdf.
+## Content
+All copy lives in index.html. GitHub, LinkedIn, mailto, and /resume.pdf links are live;
+update resume.pdf in this folder when the résumé changes.
 
 ---
 
